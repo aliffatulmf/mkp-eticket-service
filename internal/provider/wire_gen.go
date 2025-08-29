@@ -11,6 +11,7 @@ import (
 	"github.com/aliffatulmf/mkp-eticket-service/internal/handler"
 	"github.com/aliffatulmf/mkp-eticket-service/internal/repository"
 	"github.com/aliffatulmf/mkp-eticket-service/internal/service"
+	"github.com/google/wire"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -23,11 +24,10 @@ func NewTerminalHandler(db *pgxpool.Pool) handler.TerminalHandler {
 	return terminalHandler
 }
 
-func NewAuthHandler(db *pgxpool.Pool, jwtSecret string) handler.AuthHandler {
+func NewAuthHandler(db *pgxpool.Pool, jwt auth.JWTService) handler.AuthHandler {
 	adminRepository := repository.NewAdminRepository(db)
 	adminService := service.NewAdminService(adminRepository)
-	authService := auth.NewService(jwtSecret)
-	authHandler := handler.NewAuthHandler(adminService, authService)
+	authHandler := handler.NewAuthHandler(adminService, jwt)
 	return authHandler
 }
 
@@ -37,3 +37,7 @@ func NewAdminHandler(db *pgxpool.Pool) handler.AdminHandler {
 	adminHandler := handler.NewAdminHandler(adminService)
 	return adminHandler
 }
+
+// wire.go:
+
+var adminSet = wire.NewSet(repository.NewAdminRepository, service.NewAdminService)

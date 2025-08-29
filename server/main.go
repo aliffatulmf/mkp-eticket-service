@@ -8,11 +8,8 @@ import (
 	"github.com/aliffatulmf/mkp-eticket-service/internal/auth"
 	"github.com/aliffatulmf/mkp-eticket-service/internal/config"
 	"github.com/aliffatulmf/mkp-eticket-service/internal/database"
-	"github.com/aliffatulmf/mkp-eticket-service/internal/handler"
 	"github.com/aliffatulmf/mkp-eticket-service/internal/middleware"
 	"github.com/aliffatulmf/mkp-eticket-service/internal/provider"
-	"github.com/aliffatulmf/mkp-eticket-service/internal/repository"
-	"github.com/aliffatulmf/mkp-eticket-service/internal/service"
 
 	"github.com/go-chi/chi/v5"
 	chiMiddleware "github.com/go-chi/chi/v5/middleware"
@@ -35,10 +32,8 @@ func main() {
 
 	jwtService := auth.NewService(cfg.JWTSecret)
 
-	adminRepo := repository.NewAdminRepository(pool)
-	adminService := service.NewAdminService(adminRepo)
-	authHandler := handler.NewAuthHandler(adminService, jwtService)
-	adminHandler := handler.NewAdminHandler(adminService)
+	authHandler := provider.NewAuthHandler(pool, jwtService)
+	adminHandler := provider.NewAdminHandler(pool)
 
 	terminalHandler := provider.NewTerminalHandler(pool)
 

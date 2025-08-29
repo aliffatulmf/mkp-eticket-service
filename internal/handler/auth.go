@@ -18,10 +18,10 @@ type AuthHandler interface {
 
 type authHandler struct {
 	adminService service.AdminService
-	jwtService   *auth.Service
+	jwtService   auth.JWTService
 }
 
-func NewAuthHandler(adminService service.AdminService, jwtService *auth.Service) AuthHandler {
+func NewAuthHandler(adminService service.AdminService, jwtService auth.JWTService) AuthHandler {
 	return &authHandler{
 		adminService: adminService,
 		jwtService:   jwtService,

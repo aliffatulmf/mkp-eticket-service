@@ -12,6 +12,11 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+var adminSet = wire.NewSet(
+	repository.NewAdminRepository,
+	service.NewAdminService,
+)
+
 func NewTerminalHandler(db *pgxpool.Pool) handler.TerminalHandler {
 	wire.Build(
 		repository.NewTerminalRepository,
@@ -21,11 +26,9 @@ func NewTerminalHandler(db *pgxpool.Pool) handler.TerminalHandler {
 	return nil
 }
 
-func NewAuthHandler(db *pgxpool.Pool, jwtSecret string) handler.AuthHandler {
+func NewAuthHandler(db *pgxpool.Pool, jwt auth.JWTService) handler.AuthHandler {
 	wire.Build(
-		repository.NewAdminRepository,
-		service.NewAdminService,
-		auth.NewService,
+		adminSet,
 		handler.NewAuthHandler,
 	)
 	return nil
@@ -33,8 +36,7 @@ func NewAuthHandler(db *pgxpool.Pool, jwtSecret string) handler.AuthHandler {
 
 func NewAdminHandler(db *pgxpool.Pool) handler.AdminHandler {
 	wire.Build(
-		repository.NewAdminRepository,
-		service.NewAdminService,
+		adminSet,
 		handler.NewAdminHandler,
 	)
 	return nil

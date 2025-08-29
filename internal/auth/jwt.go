@@ -17,7 +17,7 @@ type Service struct {
 	secret string
 }
 
-func NewService(secret string) *Service {
+func NewService(secret string) JWTService {
 	return &Service{
 		secret: secret,
 	}
